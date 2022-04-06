@@ -1,37 +1,47 @@
 ﻿#include <iostream>
 
 using namespace std;
-void setup_towns(int *towns, int num)
+
+void inputValdiationError(const char * msg)
+{
+	cout << msg << endl;
+	exit(1);
+	exit(1);
+}
+
+void setupTowns(int *towns, int num)
 {
 	for (int i = 0; i <= num; i++)
 		towns[i] = 0;
 }
 
-void get_roads_input(int *towns, int road_number)
+void getRoadsInput(int *towns, int roads_length, int towns_length)
 {
 	int from, to;
-	for (int i = 0; i < road_number; i++)
+	for (int i = 0; i < roads_length; i++)
 	{
 		cin >> from;
 		cin >> to;
+		if (to > towns_length || from > towns_length || from == to)
+			inputValdiationError("Road definition input is invalid");
 		towns[from] += to;
 	}
 }
 
 int main()
 {
-	int town_number, road_number, *towns;
-	cin >> town_number;
-	cin >> road_number;
-	cout << "towns: " << town_number << endl;
-	cout << "roads: " << road_number << endl;
+	int towns_length, roads_length, *towns;
+	cin >> towns_length;
+	cin >> roads_length;
+	cout << "towns: " << towns_length << endl;
+	cout << "roads: " << roads_length << endl;
 
-	towns = new int[town_number];
+	towns = new int[towns_length];
 
-	setup_towns(towns, town_number);
-	get_roads_input(towns, road_number);
+	setupTowns(towns, towns_length);
+	getRoadsInput(towns, towns_length, roads_length);
 
-	for (int i = 0; i < road_number; i++)
+	for (int i = 0; i < roads_length; i++)
 	{
 		cout << towns[i] << endl;
 	}
@@ -39,4 +49,3 @@ int main()
 
 
 }
-
