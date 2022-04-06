@@ -1,10 +1,10 @@
 #pragma once
-#include "List.h"
+#include "Node.h"
 #include "ItemType.h"
 class Stack
 {
 private:
-	List* top;
+	Node* top;
 
 public:
 	Stack();

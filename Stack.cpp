@@ -1,5 +1,6 @@
 #include "Stack.h"
 
+
 Stack::Stack()
 {
 	top = nullptr;
@@ -12,12 +13,12 @@ Stack::~Stack()
 
 void Stack::MakeEmpty()
 {
-	List* temp;
+	Node* temp;
 	while (top != nullptr)
 	{
 		temp = top;
 		top = top->next;
-		selete temp;
+		delete temp;
 	}
 }
 
@@ -28,18 +29,18 @@ int Stack::IsEmpty()
 
 void Stack::Push(ItemType item)
 {
-	top = new List(item, top);
+//	top = new Node(item);
 }
 
-ItemType Stack::Pop(void)
-{
-	if (IsEmpty())
+//ItemType Stack::Pop(void)
+//{
+//	if (IsEmpty())
 		//HANDLE ERROR
 
-	List* temp = top;
-	ItemType item = top->data;
-	top = top->next;
-	delete temp;
+	//Node* temp = top;
+	//ItemType item = top->data;
+//	top = top->next;
+	//delete temp;
 
-	return item;
-}
+	//return item;
+//}
