@@ -1,6 +1,5 @@
 #include "Stack.h"
 
-
 Stack::Stack()
 {
 	top = nullptr;
@@ -13,7 +12,7 @@ Stack::~Stack()
 
 void Stack::MakeEmpty()
 {
-	Node* temp;
+	ItemType* temp;
 	while (top != nullptr)
 	{
 		temp = top;
@@ -27,20 +26,20 @@ int Stack::IsEmpty()
 	return (top == nullptr);
 }
 
-void Stack::Push(ItemType item)
+void Stack::Push(int item)
 {
-//	top = new Node(item);
+	top = new ItemType(item, top);
 }
 
-//ItemType Stack::Pop(void)
-//{
-//	if (IsEmpty())
+int Stack::Pop()
+{
+	if (IsEmpty())
 		//HANDLE ERROR
 
-	//Node* temp = top;
-	//ItemType item = top->data;
-//	top = top->next;
+	ItemType* temp = top;
+	int data = top->data;
+	top = top->next;
 	//delete temp;
 
-	//return item;
-//}
+	return data;
+}
