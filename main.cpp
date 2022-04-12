@@ -2,6 +2,7 @@
 #include "Node.h"
 #include "ItemType.h"
 #include "ArrayList.h"
+#include "Stack.h"
 
 using namespace std;
 
@@ -47,7 +48,7 @@ void getRoadsInput(Node **towns, int roads_length, int towns_length)
 	{
 		cin >> from;
 		cin >> to;
-		checkValidRoad(from , to, towns_length);
+		checkValidRoad(from, to, towns_length);
 		node = new Node(to - 1, towns[from]->next);
 
 		// TODO: is roads 1 -> 2, 1 -> 2 ok? or invalid
@@ -72,7 +73,7 @@ void printRoads(Node **towns, int roads_length) {
 	Node *node;
 	for (int i = 0; i < roads_length; i++)
 	{
-		cout << i + 1 << ": "; 
+		cout << i + 1 << ": ";
 		printTownRoads(towns[i]);
 	}
 }
@@ -87,7 +88,7 @@ bool *getEmptyVisited(int towns_length)
 }
 
 
-void GetToTown(int town_index, Node** towns, bool *visited, ArrayList *approchables) {
+void GetToTownRecu(int town_index, Node** towns, bool *visited, ArrayList *approchables) {
 	Node *node;
 
 	if (visited[town_index])
@@ -99,30 +100,49 @@ void GetToTown(int town_index, Node** towns, bool *visited, ArrayList *approchab
 	node = towns[town_index]->next;
 	while (node != nullptr)
 	{
-		GetToTown(node->data, towns, visited, approchables);
+		GetToTownRecu(node->data, towns, visited, approchables);
 		node = node->next;
 
 	}
-	/*
-	stack.push(source)
-	while stack is not empty:
-		parent = stack.pop
-		if !visited[parent];
-			visited[parent] = true
-
-			node = towns[parent]->next;
-			while (node != nullptr)
-				stack.push(node->to)
-	*/
 }
 
-ArrayList *getApprochables(int source, Node **towns,int towns_length) {
+void GetToTownIter(int town_index, Node** towns, bool *visited, ArrayList *approchables) {
+	Stack stack;
+	Node *node;
+	stack.Push(town_index);
+	while (!stack.IsEmpty()) {
+		town_index = stack.Pop();
+		if (!visited[town_index])
+		{
+			approchables->insert(town_index);
+			visited[town_index] = true;
+
+			node = towns[town_index]->next;
+			while (node != nullptr)
+			{
+				stack.Push(node->data);
+				node = node->next;
+			}
+		}
+	}
+}
+
+ArrayList *getApprochablesR(int source, Node **towns, int towns_length) {
 	ArrayList *approchables = new ArrayList(towns_length);
 	bool *visited = getEmptyVisited(towns_length);
 
-	GetToTown(source - 1, towns, visited, approchables);
+	GetToTownRecu(source - 1, towns, visited, approchables);
 	return approchables;
 }
+
+ArrayList *getApprochablesI(int source, Node **towns, int towns_length) {
+	ArrayList *approchables = new ArrayList(towns_length);
+	bool *visited = getEmptyVisited(towns_length);
+
+	GetToTownIter(source - 1, towns, visited, approchables);
+	return approchables;
+}
+
 
 void printApprochables(ArrayList *approchables) {
 	int i = approchables->headList;
@@ -154,7 +174,11 @@ int main()
 	checkValidTown(source, towns_length);
 
 
-	approchables = getApprochables(source, towns, towns_length);
-	cout << endl << "approchables: " << endl;
+	approchables = getApprochablesR(source, towns, towns_length);
+	cout << endl << "Recursion Approchables: " << endl;
+	printApprochables(approchables);
+
+	approchables = getApprochablesI(source, towns, towns_length);
+	cout << endl << "Iterative Approchables: " << endl;
 	printApprochables(approchables);
 }
