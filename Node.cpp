@@ -1,9 +1,5 @@
 #include "Node.h"
 
-//List::~List()
-//{
-//}
-
 void Node::InsertAfter(Node* newNode)
 {
 	newNode->next = next;

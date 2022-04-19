@@ -9,9 +9,9 @@ ArrayList::ArrayList(int n) {
 	
 }
 
-void ArrayList::insert(int data)
+void ArrayList::insert(int data) //last
 {
-	int loc = headFree;
+	int loc = headFree, i;
 	if (loc == -1)
 	{
 		std::cout << "Out of memory in ArrayList" << std::endl;
@@ -19,25 +19,27 @@ void ArrayList::insert(int data)
 	}
 	headFree = arr[headFree].next;
 	arr[loc].data = data;
+	arr[loc].next = -1;
+
 
 	if (headList == -1)
 	{
 		headList = loc;
 		arr[headList].next = -1;
 	}
-	else
-	{
-		arr[loc].next = headList;
-		headList = loc;
+	else {
+		i = headList;
+		while (arr[i].next != -1)
+			i = arr[i].next;
+		arr[i].next = loc;
 	}
-
-
-
 }
-/*void ArrayList::deleteAfter(int node_index)
+void ArrayList::deleteHead()
 {
-	int loc = arr[node_index].next;
-	arr[node_index].next = arr[loc].next;
-	arr[loc].next = headFree;
-	headFree = loc;
-}*/
+	int temp_i = headList;
+	headList = arr[headList].next;
+
+	arr[temp_i].next = headFree;
+	headFree = temp_i;
+	
+}

@@ -10,6 +10,6 @@ class ArrayList
 		int headFree;
 		int headList;
 		void insert(int data);
-		void deleteAfter(int node);
+		void deleteHead();
 };
 

@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Stack.h"
 
 Stack::Stack()
@@ -34,7 +35,11 @@ void Stack::Push(int item)
 int Stack::Pop()
 {
 	if (IsEmpty())
-		//HANDLE ERROR
+	{
+		std::cout << "Stack is Empty error";
+		exit(1);
+	}
+		
 
 	ItemType* temp = top;
 	int data = top->data;

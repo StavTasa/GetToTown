@@ -3,6 +3,8 @@
 #include "ItemType.h"
 #include "ArrayList.h"
 #include "Stack.h"
+#include <string.h>
+#include <sstream>
 
 using namespace std;
 
@@ -15,10 +17,10 @@ void inputValdiationError(const char * msg)
 void checkValidTown(int town_number, int towns_length)
 {
 	if (town_number < 1)
-		inputValdiationError("Road cant point to negetive number");
+		inputValdiationError("Invalid input");
 
 	if (town_number > towns_length)
-		inputValdiationError("Invalid town number");
+		inputValdiationError("Invalid input");
 }
 
 Node** getTowns(int num)
@@ -37,23 +39,49 @@ void checkValidRoad(int from, int to, int towns_length)
 
 	if (from == to)
 		inputValdiationError("Road definition input is invalid");
+
 }
 
 void getRoadsInput(Node **towns, int roads_length, int towns_length)
 {
-	int from, to;
-	Node *node;
+	int from, to, i = 0;
+	Node *node, *temp_node;
 
-	for (int i = 0; i < roads_length; i++)
-	{
-		cin >> from;
-		cin >> to;
-		checkValidRoad(from, to, towns_length);
-		node = new Node(to - 1, towns[from]->next);
+	string s;
 
-		// TODO: is roads 1 -> 2, 1 -> 2 ok? or invalid
-		towns[from - 1]->InsertAfter(node);
+	getline(cin, s);
+	s.append(" ");
+	if (s == " ")
+		return;
+	string delimiter = " ";
+
+	size_t pos = 0;
+	string token;
+	while ((pos = s.find(delimiter)) != string::npos) {
+		token = s.substr(0, pos);
+		if (i % 2 == 0)
+			from = stoi(token);
+		else
+		{
+			to = stoi(token);
+			checkValidRoad(from, to, towns_length);
+			node = new Node(to - 1, towns[from]->next);
+
+			temp_node = towns[from - 1];
+			while (temp_node->next != NULL)
+				temp_node = temp_node->next;
+
+			temp_node->InsertAfter(node);
+		}
+		i++;
+		if (i / 2 > roads_length)
+			inputValdiationError("Invalid input");
+		s.erase(0, pos + delimiter.length());
+
 	}
+	if (i / 2 != roads_length)
+		inputValdiationError("Invalid input");
+
 }
 
 void printTownRoads(Node *node)
@@ -94,8 +122,8 @@ void GetToTownRecu(int town_index, Node** towns, bool *visited, ArrayList *appro
 	if (visited[town_index])
 		return;
 
-	approchables->insert(town_index);
 	visited[town_index] = true;
+	approchables->insert(town_index);
 
 	node = towns[town_index]->next;
 	while (node != nullptr)
@@ -107,7 +135,7 @@ void GetToTownRecu(int town_index, Node** towns, bool *visited, ArrayList *appro
 }
 
 void GetToTownIter(int town_index, Node** towns, bool *visited, ArrayList *approchables) {
-	Stack stack;
+	Stack stack, stack_temp;
 	Node *node;
 	stack.Push(town_index);
 	while (!stack.IsEmpty()) {
@@ -120,9 +148,11 @@ void GetToTownIter(int town_index, Node** towns, bool *visited, ArrayList *appro
 			node = towns[town_index]->next;
 			while (node != nullptr)
 			{
-				stack.Push(node->data);
+				stack_temp.Push(node->data);
 				node = node->next;
 			}
+			while (!stack_temp.IsEmpty())
+				stack.Push(stack_temp.Pop());
 		}
 	}
 }
@@ -146,14 +176,13 @@ ArrayList *getApprochablesI(int source, Node **towns, int towns_length) {
 
 void printApprochables(ArrayList *approchables) {
 	int i = approchables->headList;
-	cout << '{';
 	while (i != -1)
 	{
-		cout << approchables->arr[i].data + 1 << ", ";
+		cout << approchables->arr[i].data + 1 << " ";
 		i = approchables->arr[i].next;
 	}
-	cout << '}' << endl;
 }
+
 
 int main()
 {
@@ -163,22 +192,25 @@ int main()
 
 	cin >> towns_length;
 	cin >> roads_length;
-	cout << "towns: " << towns_length << endl;
-	cout << "roads: " << roads_length << endl;
+	getchar();
+
+	if (towns_length < 0 || roads_length < 0)
+		inputValdiationError("Invalid input");
+		
 
 	towns = getTowns(towns_length);
 	getRoadsInput(towns, roads_length, towns_length);
-	//printRoads(towns, roads_length);
 
 	cin >> source;
 	checkValidTown(source, towns_length);
 
 
 	approchables = getApprochablesR(source, towns, towns_length);
-	cout << endl << "Recursion Approchables: " << endl;
+	cout << endl << "Cities accessible from source city " << source << " (recursive algorithm): ";
 	printApprochables(approchables);
 
 	approchables = getApprochablesI(source, towns, towns_length);
-	cout << endl << "Iterative Approchables: " << endl;
+	cout << endl << "Cities accessible from city source city " << source << " (iterative algorithm): " ;
 	printApprochables(approchables);
+
 }
