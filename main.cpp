@@ -68,7 +68,7 @@ void getRoadsInput(Node **towns, int roads_length, int towns_length)
 			node = new Node(to - 1, towns[from]->next);
 
 			temp_node = towns[from - 1];
-			while (temp_node->next != NULL)
+			while (temp_node->next != nullptr)
 				temp_node = temp_node->next;
 
 			temp_node->InsertAfter(node);
@@ -183,7 +183,20 @@ void printApprochables(ArrayList *approchables) {
 	}
 }
 
-
+void freeData(Node ** towns, int towns_length)
+{
+	Node *node, *temp;
+	for (int i = 0; i < towns_length; i++)
+	{
+		node = towns[i];
+		while (node != nullptr)
+		{
+			temp = node->next;
+			delete node;
+			node = temp;
+		}
+	}
+}
 int main()
 {
 	int towns_length, roads_length, source;
@@ -213,4 +226,5 @@ int main()
 	cout << endl << "Cities accessible from city source city " << source << " (iterative algorithm): " ;
 	printApprochables(approchables);
 
+	freeData(towns, towns_length);
 }

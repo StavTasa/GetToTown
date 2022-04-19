@@ -4,10 +4,15 @@ ArrayList::ArrayList(int n) {
 	arr = new NodeArrayList[n];
 	headFree = 0;
 	headList = -1;
-	for (int i = 0; i < n-1; i++)
-		arr[i].next = i+1;
-	
+	for (int i = 0; i < n - 1; i++)
+		arr[i].next = i + 1;
+
 }
+
+ArrayList::~ArrayList() {
+	delete arr;
+}
+
 
 void ArrayList::insert(int data) //last
 {
